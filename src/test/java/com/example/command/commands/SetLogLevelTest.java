@@ -6,6 +6,7 @@ import com.example.command.contract.CommandPayload;
 import com.example.command.contract.CommandStatus;
 import com.example.command.exceptions.InvalidCommandPayloadException;
 import com.example.command.testing.DeviceTestBuilder;
+import com.example.device.DeviceNotFoundException;
 import com.example.device.DeviceRegistered;
 import com.example.device.DeviceService;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,6 @@ import org.mockito.Mockito;
 
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -84,10 +84,13 @@ class SetLogLevelTest {
         assertEquals(CommandStatus.Failed, result.status());
         assertEquals(payload, result.payloadInput());
         assertEquals(new CommandPayload.Empty(), result.payloadOutput());
-        assertAll(
-            () -> assertEquals(CommandContext.Error.class, result.context().getClass()),
-            () -> assertEquals("Device not found", ((CommandContext.Error) result.context()).throwable().getMessage())
-        );
+
+        assertEquals(CommandContext.Error.class, result.context().getClass());
+        final var context = (CommandContext.Error) result.context();
+        final var exception = (DeviceNotFoundException) context.throwable();
+        assertEquals("Device not found", exception.getMessage());
+        assertEquals(deviceId, exception.getDeviceId());
+
         assertNotNull(result.processedAt());
         assertNotNull(result.id());
     }
@@ -99,6 +102,6 @@ class SetLogLevelTest {
 
     private void mockDeviceServiceToFail(DeviceRegistered deviceRegistered) {
         Mockito.when(deviceService.findById(deviceRegistered.id()))
-            .thenThrow(new IllegalArgumentException("Device not found"));
+            .thenThrow(new DeviceNotFoundException(deviceRegistered.id(), null));
     }
 }
