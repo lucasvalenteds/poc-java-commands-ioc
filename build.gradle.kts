@@ -17,6 +17,7 @@ dependencies {
     implementation("com.fasterxml.jackson.core", "jackson-databind", properties["version.jackson"].toString())
 
     testImplementation("org.junit.jupiter", "junit-jupiter", properties["version.junit"].toString())
+    testImplementation("org.mockito", "mockito-core", properties["version.mockito"].toString())
 }
 
 java {
