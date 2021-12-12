@@ -1,6 +1,5 @@
 package com.example.command.testing;
 
-import com.example.command.CommandResultMapper;
 import com.example.command.commands.SetLogLevel;
 import com.example.command.contract.CommandName;
 import com.example.command.contract.CommandResult;
@@ -28,15 +27,5 @@ public final class CommandTestBuilder {
         final var processedAt = LocalDateTime.of(2021, 12, 12, 10, 10, 10);
 
         return new CommandResult.Processed(name, status, payloadInput, payloadOutput, context, processedAt, commandId);
-    }
-
-    public static CommandResult.Persisted createCommandPersisted(UUID commandId) {
-        final var result = CommandTestBuilder.createCommandProcessed(commandId);
-        return CommandResultMapper.toPersisted(result);
-    }
-
-    public static CommandResult.Executed createCommandExecuted(UUID commandId) {
-        final var result = CommandTestBuilder.createCommandPersisted(commandId);
-        return CommandResultMapper.toExecuted(result);
     }
 }
