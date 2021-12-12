@@ -10,14 +10,10 @@ public final class InvalidCommandPayloadException extends RuntimeException {
     private final String property;
     private final Object value;
 
-    public InvalidCommandPayloadException(String property, Object value, Throwable throwable) {
-        super("Invalid command payload attribute", throwable);
+    public InvalidCommandPayloadException(String property, Object value) {
+        super("Invalid command payload attribute: " + property);
         this.property = property;
         this.value = value;
-    }
-
-    public InvalidCommandPayloadException(String property, Object value) {
-        this(property, value, null);
     }
 
     public String getProperty() {
@@ -26,10 +22,5 @@ public final class InvalidCommandPayloadException extends RuntimeException {
 
     public Object getValue() {
         return value;
-    }
-
-    @Override
-    public String toString() {
-        return this.getMessage() + ": " + this.property;
     }
 }

@@ -37,8 +37,7 @@ class SetLogLevelTest {
             () -> command.processInput(payload)
         );
 
-        assertEquals("Invalid command payload attribute", exception.getMessage());
-        assertEquals("Invalid command payload attribute: level", exception.toString());
+        assertEquals("Invalid command payload attribute: level", exception.getMessage());
         assertEquals("level", exception.getProperty());
         assertEquals(payload.level(), exception.getValue());
     }
