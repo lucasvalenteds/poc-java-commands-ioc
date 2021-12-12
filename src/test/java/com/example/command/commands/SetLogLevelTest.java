@@ -26,7 +26,7 @@ class SetLogLevelTest {
     private final DeviceService deviceService = Mockito.mock(DeviceService.class);
     private final SetLogLevel command = new SetLogLevel(deviceService);
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "level {0}")
     @ValueSource(ints = {0, 7})
     void throwsWhenLogLevelIsLowerThanOneOrGreaterThanSix(int level) {
         final var deviceId = UUID.randomUUID();
@@ -42,7 +42,7 @@ class SetLogLevelTest {
         assertEquals(payload.level(), exception.getValue());
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "level {0}")
     @ValueSource(ints = {1, 2, 3, 4, 5, 6})
     void allowsLogLevelBetweenOneAndSix(int level) {
         final var deviceId = UUID.randomUUID();
