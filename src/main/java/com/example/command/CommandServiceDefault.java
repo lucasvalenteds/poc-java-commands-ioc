@@ -3,6 +3,7 @@ package com.example.command;
 import com.example.command.contract.CommandName;
 import com.example.command.contract.CommandPayload;
 import com.example.command.contract.CommandResult;
+import com.example.command.contract.CommandStatus;
 import com.example.command.exceptions.CommandNotFoundException;
 import com.example.command.exceptions.CommandNotImplementedException;
 import com.example.command.exceptions.CommandPersistenceException;
@@ -39,6 +40,10 @@ public final class CommandServiceDefault implements CommandService {
         final var commandPersisted = CommandResultMapper.toPersisted(commandProcessed);
         repository.save(commandPersisted);
         LOGGER.info("Command persisted: {}", commandPersisted);
+
+        if (commandPersisted.status() == CommandStatus.Failed) {
+            return new CommandId(commandPersisted.id());
+        }
 
         final var commandExecuted = CommandResultMapper.toExecuted(commandPersisted);
         repository.save(commandExecuted);
