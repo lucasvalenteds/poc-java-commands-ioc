@@ -14,6 +14,10 @@ dependencies {
     implementation("org.apache.logging.log4j", "log4j-core", properties["version.log4j"].toString())
     implementation("org.slf4j", "slf4j-simple", properties["version.slf4j"].toString())
 
+    implementation("org.springframework", "spring-core", properties["version.spring.framework"].toString())
+    implementation("org.springframework", "spring-context", properties["version.spring.framework"].toString())
+    implementation("org.springframework", "spring-test", properties["version.spring.framework"].toString())
+
     implementation("com.fasterxml.jackson.core", "jackson-databind", properties["version.jackson"].toString())
 
     testImplementation("org.junit.jupiter", "junit-jupiter", properties["version.junit"].toString())
