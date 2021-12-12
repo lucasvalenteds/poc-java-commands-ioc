@@ -31,6 +31,9 @@ class CommandRepositoryDefaultTest {
 
     private final static UUID COMMAND_ID = UUID.randomUUID();
 
+    private static CommandResult.Processed processed;
+    private static CommandResult.Persisted persisted;
+
     private CommandRepository repository;
 
     @BeforeEach
@@ -65,24 +68,28 @@ class CommandRepositoryDefaultTest {
         final var resultFound = repository.findById(result.id());
         assertEquals(result, resultFound);
         assertEquals(CommandResult.Processed.class, resultFound.getClass());
+
+        CommandRepositoryDefaultTest.processed = (CommandResult.Processed) resultFound;
     }
 
     @Test
     @Order(2)
     void savingCommandResultPersisted() {
-        final CommandResult.Persisted result = CommandTestBuilder.createCommandPersisted(COMMAND_ID);
+        final CommandResult.Persisted result = CommandResultMapper.toPersisted(CommandRepositoryDefaultTest.processed);
 
         repository.save(result);
         final var resultFound = repository.findById(result.id());
 
         assertEquals(result, resultFound);
         assertEquals(CommandResult.Persisted.class, resultFound.getClass());
+
+        CommandRepositoryDefaultTest.persisted = (CommandResult.Persisted) resultFound;
     }
 
     @Test
     @Order(3)
     void savingCommandResultExecuted() {
-        final CommandResult.Executed result = CommandTestBuilder.createCommandExecuted(COMMAND_ID);
+        final CommandResult.Executed result = CommandResultMapper.toExecuted(CommandRepositoryDefaultTest.persisted);
 
         repository.save(result);
         final var resultFound = repository.findById(result.id());

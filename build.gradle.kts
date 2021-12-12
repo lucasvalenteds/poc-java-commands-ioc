@@ -42,5 +42,6 @@ tasks.test {
     testLogging {
         events = setOf(TestLogEvent.PASSED, TestLogEvent.FAILED, TestLogEvent.SKIPPED)
     }
+    jvmArgs = listOf("-Duser.timezone=UTC")
     finalizedBy(tasks.jacocoTestReport)
 }
