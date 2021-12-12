@@ -6,9 +6,16 @@ import java.util.UUID;
 public final class CommandNotFoundException extends RuntimeException {
 
     @Serial
-    private static final long serialVersionUID = 1472978273383520595L;
+    private static final long serialVersionUID = 4891400208981110136L;
+
+    private final UUID id;
 
     public CommandNotFoundException(UUID id, Throwable throwable) {
-        super("Command not found with ID " + id, throwable);
+        super("Command not found", throwable);
+        this.id = id;
+    }
+
+    public UUID getId() {
+        return id;
     }
 }
