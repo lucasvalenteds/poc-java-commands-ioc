@@ -18,4 +18,9 @@ public class CommandConfiguration {
     CommandRepository commandRepository(JdbcTemplate jdbcTemplate, ObjectMapper objectMapper) {
         return new CommandRepositoryDefault(jdbcTemplate, objectMapper);
     }
+
+    @Bean
+    CommandService commandService(CommandFactory commandFactory, CommandRepository commandRepository) {
+        return new CommandServiceDefault(commandFactory, commandRepository);
+    }
 }
