@@ -1,6 +1,5 @@
 package com.example.command;
 
-import com.example.command.commands.SetLogLevel;
 import com.example.command.contract.CommandContext;
 import com.example.command.contract.CommandName;
 import com.example.command.contract.CommandPayload;
@@ -101,16 +100,10 @@ public final class CommandRepositoryDefault implements CommandRepository {
         }
     }
 
-    private CommandContext toCommandContext(ResultSet resultSet, CommandName commandName, CommandStatus commandStatus) {
+    private CommandContext toCommandContext(ResultSet resultSet) {
         try {
             final var context = resultSet.getString("CONTEXT");
-            return switch (commandStatus) {
-                case Received, Delivered -> switch (commandName) {
-                    case SetLogLevel -> objectMapper.readValue(context, SetLogLevel.PayloadContext.class);
-                    case TurnOn, NoOp -> objectMapper.readValue(context, CommandContext.Empty.class);
-                };
-                case Failed -> objectMapper.readValue(context, CommandContext.Error.class);
-            };
+            return objectMapper.readValue(context, CommandContext.class);
         } catch (JsonProcessingException exception) {
             throw new CommandPersistenceException(exception);
         } catch (SQLException exception) {
@@ -118,13 +111,10 @@ public final class CommandRepositoryDefault implements CommandRepository {
         }
     }
 
-    private CommandPayload toCommandPayloadInput(ResultSet resultSet, CommandName commandName) {
+    private CommandPayload toCommandPayloadInput(ResultSet resultSet) {
         try {
             final var payloadInput = resultSet.getString("PAYLOAD_INPUT");
-            return switch (commandName) {
-                case SetLogLevel -> objectMapper.readValue(payloadInput, SetLogLevel.PayloadInput.class);
-                case TurnOn, NoOp -> objectMapper.readValue(payloadInput, CommandPayload.Empty.class);
-            };
+            return objectMapper.readValue(payloadInput, CommandPayload.class);
         } catch (JsonProcessingException exception) {
             throw new CommandPersistenceException(exception);
         } catch (SQLException exception) {
@@ -132,13 +122,10 @@ public final class CommandRepositoryDefault implements CommandRepository {
         }
     }
 
-    private CommandPayload toCommandPayloadOutput(ResultSet resultSet, CommandName commandName) {
+    private CommandPayload toCommandPayloadOutput(ResultSet resultSet) {
         try {
             final var payloadOutput = resultSet.getString("PAYLOAD_OUTPUT");
-            return switch (commandName) {
-                case SetLogLevel -> objectMapper.readValue(payloadOutput, SetLogLevel.PayloadOutput.class);
-                case TurnOn, NoOp -> objectMapper.readValue(payloadOutput, CommandPayload.Empty.class);
-            };
+            return objectMapper.readValue(payloadOutput, CommandPayload.class);
         } catch (JsonProcessingException exception) {
             throw new CommandPersistenceException(exception);
         } catch (SQLException exception) {
@@ -163,9 +150,9 @@ public final class CommandRepositoryDefault implements CommandRepository {
         // CommandResult.Processed
         final var name = CommandName.valueOf(resultSet.getString("NAME"));
         final var status = CommandStatus.valueOf(resultSet.getString("STATUS"));
-        final var payloadInput = this.toCommandPayloadInput(resultSet, name);
-        final var payloadOutput = this.toCommandPayloadOutput(resultSet, name);
-        final var context = this.toCommandContext(resultSet, name, status);
+        final var payloadInput = this.toCommandPayloadInput(resultSet);
+        final var payloadOutput = this.toCommandPayloadOutput(resultSet);
+        final var context = this.toCommandContext(resultSet);
 
         // CommandResult.Processed
         final var id = UUID.fromString(resultSet.getString("ID"));
