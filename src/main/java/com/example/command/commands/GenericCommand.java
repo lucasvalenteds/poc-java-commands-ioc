@@ -7,7 +7,9 @@ import com.example.command.contract.CommandResult;
 import com.example.command.contract.CommandStatus;
 import com.example.command.exceptions.InvalidCommandPayloadException;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.UUID;
 
 abstract class GenericCommand<INPUT extends CommandPayload, OUTPUT extends CommandPayload> implements Command<INPUT> {
@@ -51,7 +53,7 @@ abstract class GenericCommand<INPUT extends CommandPayload, OUTPUT extends Comma
 
     @Override
     public final CommandResult.Processed process(INPUT input) {
-        final var processedAt = LocalDateTime.now();
+        final var processedAt = LocalDateTime.ofInstant(Instant.now(), ZoneOffset.UTC);
         final var commandId = UUID.randomUUID();
 
         try {

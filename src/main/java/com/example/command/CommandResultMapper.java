@@ -1,8 +1,11 @@
 package com.example.command;
 
 import com.example.command.contract.CommandResult;
+import com.example.command.contract.CommandStatus;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 public final class CommandResultMapper {
 
@@ -10,7 +13,7 @@ public final class CommandResultMapper {
     }
 
     public static CommandResult.Persisted toPersisted(CommandResult.Processed result) {
-        final var persistedAt = LocalDateTime.now();
+        final var persistedAt = LocalDateTime.ofInstant(Instant.now(), ZoneOffset.UTC);
         return new CommandResult.Persisted(
             result.name(),
             result.status(),
@@ -24,10 +27,10 @@ public final class CommandResultMapper {
     }
 
     public static CommandResult.Executed toExecuted(CommandResult.Persisted result) {
-        final var executedAt = LocalDateTime.now();
+        final var executedAt = LocalDateTime.ofInstant(Instant.now(), ZoneOffset.UTC);
         return new CommandResult.Executed(
             result.name(),
-            result.status(),
+            CommandStatus.Delivered,
             result.payloadInput(),
             result.payloadOutput(),
             result.context(),
