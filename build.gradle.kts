@@ -18,6 +18,10 @@ dependencies {
     implementation("org.springframework", "spring-context", properties["version.spring.framework"].toString())
     implementation("org.springframework", "spring-test", properties["version.spring.framework"].toString())
 
+    implementation("org.springframework.data", "spring-data-jdbc", properties["version.spring.data"].toString())
+    implementation("org.flywaydb", "flyway-core", properties["version.flyway"].toString())
+    implementation("com.h2database", "h2", properties["version.h2"].toString())
+
     implementation("com.fasterxml.jackson.core", "jackson-databind", properties["version.jackson"].toString())
 
     testImplementation("org.junit.jupiter", "junit-jupiter", properties["version.junit"].toString())
