@@ -10,6 +10,7 @@ import com.example.command.contract.CommandName;
 import com.example.command.contract.CommandPayload;
 import com.example.command.contract.CommandResult;
 import com.example.command.contract.CommandStatus;
+import com.example.command.exceptions.CommandPersistenceException;
 import com.example.command.testing.CommandTestConfiguration;
 import com.example.command.testing.DeviceTestBuilder;
 import com.example.device.DeviceRegistered;
@@ -28,6 +29,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 
+import java.sql.SQLException;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -177,5 +179,37 @@ public class CommandControllerTest {
         final var result = commandService.findById(commandId.id());
         final var context = ((CommandContext.Error) result.context());
         assertEquals("Invalid command payload attribute: level", context.throwable().getMessage());
+    }
+
+    @Test
+    void testDatabasePersistenceError() {
+        // Arrange
+        final var commandService = Mockito.mock(CommandService.class);
+        final var commandController = new CommandController(commandService);
+        final var webTestClient = WebTestClient.bindToController(commandController)
+            .configureClient()
+            .build();
+
+        final var commandName = CommandName.SetLogLevel;
+        final var payload = new SetLogLevel.PayloadInput(UUID.randomUUID(), 10);
+
+        Mockito.when(commandService.execute(commandName, payload))
+            .thenThrow(new CommandPersistenceException(new SQLException()));
+
+        // Act
+        final var error = webTestClient.post()
+            .uri("/commands/{commandName}", commandName.name())
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(BodyInserters.fromValue(payload))
+            .exchange()
+            .expectStatus().is5xxServerError()
+            .expectHeader().contentType(MediaType.APPLICATION_JSON)
+            .expectBody(ServiceResponseError.class)
+            .returnResult()
+            .getResponseBody();
+
+        // Assert
+        assertNotNull(error);
+        assertEquals("Could not persist command", error.message());
     }
 }
