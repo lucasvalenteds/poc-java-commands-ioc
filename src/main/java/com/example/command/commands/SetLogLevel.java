@@ -33,7 +33,8 @@ public final class SetLogLevel extends GenericCommand<SetLogLevel.PayloadInput, 
     }
 
     @Override
-    protected void processInput(PayloadInput input) throws InvalidCommandPayloadException, DeviceNotFoundException {
+    protected void processInput(SetLogLevel.PayloadInput input)
+        throws InvalidCommandPayloadException, DeviceNotFoundException {
         if (input.level() < 1 || input.level() > 6) {
             throw new InvalidCommandPayloadException("level", input.level());
         }
@@ -50,6 +51,6 @@ public final class SetLogLevel extends GenericCommand<SetLogLevel.PayloadInput, 
         final var deviceRegistered = context.deviceRegistered();
         final var message = "Device " + deviceRegistered.name() + " log level changed to " + input.level();
 
-        super.setOutput(new PayloadOutput(message));
+        super.setOutput(new SetLogLevel.PayloadOutput(message));
     }
 }
