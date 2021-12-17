@@ -119,17 +119,17 @@ public final class CommandRepositoryDefault implements CommandRepository {
         return this.readJsonColumn(resultSet, "PAYLOAD_OUTPUT", CommandPayload.class);
     }
 
-    private LocalDateTime readTimestamp(ResultSet resultSet, String column) throws SQLException {
+    private static LocalDateTime readTimestamp(ResultSet resultSet, String column) throws SQLException {
         final var instant = resultSet.getObject(column, Instant.class);
         return LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
     }
 
-    private Optional<LocalDateTime> readOptionalTimestamp(ResultSet resultSet, String column) throws SQLException {
+    private static Optional<LocalDateTime> readOptionalTimestamp(ResultSet resultSet, String column) throws SQLException {
         final var timestamp = resultSet.getTimestamp(column);
         if (timestamp == null) {
             return Optional.empty();
         }
-        return Optional.of(this.readTimestamp(resultSet, column));
+        return Optional.of(CommandRepositoryDefault.readTimestamp(resultSet, column));
     }
 
     private CommandResult mapRow(ResultSet resultSet, int rowNumber) throws SQLException {
@@ -142,10 +142,10 @@ public final class CommandRepositoryDefault implements CommandRepository {
 
         // CommandResult.Processed
         final var id = UUID.fromString(resultSet.getString("ID"));
-        final var processedAt = this.readTimestamp(resultSet, "PROCESSED_AT");
+        final var processedAt = CommandRepositoryDefault.readTimestamp(resultSet, "PROCESSED_AT");
 
         // CommandResult.Persisted
-        final var persistedAt = this.readOptionalTimestamp(resultSet, "PERSISTED_AT");
+        final var persistedAt = CommandRepositoryDefault.readOptionalTimestamp(resultSet, "PERSISTED_AT");
         if (persistedAt.isEmpty()) {
             return new CommandResult.Processed(
                 name,
@@ -159,7 +159,7 @@ public final class CommandRepositoryDefault implements CommandRepository {
         }
 
         // CommandResult.Executed
-        final var executedAt = this.readOptionalTimestamp(resultSet, "EXECUTED_AT");
+        final var executedAt = CommandRepositoryDefault.readOptionalTimestamp(resultSet, "EXECUTED_AT");
         if (executedAt.isEmpty()) {
             return new CommandResult.Persisted(
                 name,
