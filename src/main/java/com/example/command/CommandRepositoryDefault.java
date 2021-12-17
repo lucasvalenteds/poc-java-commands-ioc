@@ -72,6 +72,7 @@ public final class CommandRepositoryDefault implements CommandRepository {
         });
     }
 
+    @Transactional(readOnly = true)
     public CommandResult findById(UUID id) throws CommandNotFoundException {
         final var query = """
             select NAME, STATUS, PAYLOAD_INPUT, PAYLOAD_OUTPUT, CONTEXT, PROCESSED_AT, ID, PERSISTED_AT, EXECUTED_AT
