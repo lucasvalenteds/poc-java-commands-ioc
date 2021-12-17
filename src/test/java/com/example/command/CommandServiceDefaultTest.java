@@ -64,7 +64,7 @@ class CommandServiceDefaultTest {
         final var result = service.findById(id);
 
         assertEquals(CommandName.TurnOn, result.name());
-        assertEquals(CommandStatus.Delivered, result.status());
+        assertEquals(CommandStatus.DELIVERED, result.status());
         assertEquals(new CommandPayload.Empty(), result.payloadInput());
         assertEquals(new CommandPayload.Empty(), result.payloadOutput());
         assertEquals(new CommandContext.Empty(), result.context());

@@ -41,7 +41,7 @@ public final class CommandServiceDefault implements CommandService {
         repository.save(commandPersisted);
         LOGGER.info("Command persisted: {}", commandPersisted);
 
-        if (commandPersisted.status() == CommandStatus.Failed) {
+        if (commandPersisted.status() == CommandStatus.FAILED) {
             return new CommandId(commandPersisted.id());
         }
 

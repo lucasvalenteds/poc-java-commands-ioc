@@ -39,7 +39,7 @@ class GenericCommandTest {
         final var result = command.process(null);
 
         assertNotNull(result);
-        assertEquals(CommandStatus.Failed, result.status());
+        assertEquals(CommandStatus.FAILED, result.status());
         assertNull(result.payloadInput());
         assertNotNull(result.context());
         assertEquals(CommandContext.Error.class, result.context().getClass());
@@ -61,7 +61,7 @@ class GenericCommandTest {
 
         assertNotNull(result);
         assertEquals(command.getName(), result.name());
-        assertEquals(CommandStatus.Received, result.status());
+        assertEquals(CommandStatus.RECEIVED, result.status());
         assertEquals(input, result.payloadInput());
         assertEquals(new CommandPayload.Empty(), result.payloadOutput());
         assertEquals(new CommandContext.Empty(), result.context());

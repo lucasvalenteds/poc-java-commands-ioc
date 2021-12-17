@@ -62,7 +62,7 @@ abstract class GenericCommand<I extends CommandPayload, O extends CommandPayload
             this.processOutput(input);
             return new CommandResult.Processed(
                 getName(),
-                CommandStatus.Received,
+                CommandStatus.RECEIVED,
                 input,
                 output,
                 context,
@@ -73,7 +73,7 @@ abstract class GenericCommand<I extends CommandPayload, O extends CommandPayload
             final var errorContext = new CommandContext.Error(exception);
             return new CommandResult.Processed(
                 getName(),
-                CommandStatus.Failed,
+                CommandStatus.FAILED,
                 input,
                 output,
                 errorContext,

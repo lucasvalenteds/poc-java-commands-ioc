@@ -30,7 +30,7 @@ public final class CommandResultMapper {
         final var executedAt = LocalDateTime.ofInstant(Instant.now(), ZoneOffset.UTC);
         return new CommandResult.Executed(
             result.name(),
-            CommandStatus.Delivered,
+            CommandStatus.DELIVERED,
             result.payloadInput(),
             result.payloadOutput(),
             result.context(),

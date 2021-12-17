@@ -62,7 +62,7 @@ class SetLogLevelTest {
         final var result = command.process(payload);
 
         assertEquals(CommandName.SetLogLevel, result.name());
-        assertEquals(CommandStatus.Received, result.status());
+        assertEquals(CommandStatus.RECEIVED, result.status());
         assertEquals(payload, result.payloadInput());
         assertEquals(new SetLogLevel.PayloadContext(deviceRegistered), result.context());
         assertEquals(new SetLogLevel.PayloadOutput("Device Lamp log level changed to 1"), result.payloadOutput());
@@ -81,7 +81,7 @@ class SetLogLevelTest {
         final var result = command.process(payload);
 
         assertEquals(CommandName.SetLogLevel, result.name());
-        assertEquals(CommandStatus.Failed, result.status());
+        assertEquals(CommandStatus.FAILED, result.status());
         assertEquals(payload, result.payloadInput());
         assertEquals(new CommandPayload.Empty(), result.payloadOutput());
 

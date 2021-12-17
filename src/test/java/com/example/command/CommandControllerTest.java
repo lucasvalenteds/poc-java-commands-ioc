@@ -109,7 +109,7 @@ class CommandControllerTest {
         assertNotNull(result);
         assertEquals(id, result.id());
         assertEquals(COMMAND_NAME, result.name());
-        assertEquals(CommandStatus.Delivered, result.status());
+        assertEquals(CommandStatus.DELIVERED, result.status());
         assertEquals(COMMAND_PAYLOAD, result.payloadInput());
     }
 
