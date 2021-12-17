@@ -12,12 +12,12 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.UUID;
 
-abstract class GenericCommand<INPUT extends CommandPayload, OUTPUT extends CommandPayload> implements Command<INPUT> {
+abstract class GenericCommand<I extends CommandPayload, O extends CommandPayload> implements Command<I> {
 
     private CommandContext context = new CommandContext.Empty();
     private CommandPayload output = new CommandPayload.Empty();
 
-    private void validateInput(INPUT input) {
+    private void validateInput(I input) {
         if (input == null) {
             throw new IllegalArgumentException("Command input cannot be null");
         }
@@ -35,7 +35,7 @@ abstract class GenericCommand<INPUT extends CommandPayload, OUTPUT extends Comma
         this.context = context;
     }
 
-    protected final void setOutput(OUTPUT output) throws IllegalArgumentException {
+    protected final void setOutput(O output) throws IllegalArgumentException {
         if (output == null) {
             throw new IllegalArgumentException("Command output cannot be null");
         }
@@ -43,16 +43,16 @@ abstract class GenericCommand<INPUT extends CommandPayload, OUTPUT extends Comma
         this.output = output;
     }
 
-    protected void processInput(INPUT input) throws InvalidCommandPayloadException {
+    protected void processInput(I input) throws InvalidCommandPayloadException {
         // No-op
     }
 
-    protected void processOutput(INPUT input) {
+    protected void processOutput(I input) {
         // No-op
     }
 
     @Override
-    public final CommandResult.Processed process(INPUT input) {
+    public final CommandResult.Processed process(I input) {
         final var processedAt = LocalDateTime.ofInstant(Instant.now(), ZoneOffset.UTC);
         final var commandId = UUID.randomUUID();
 
