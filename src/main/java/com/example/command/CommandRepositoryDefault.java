@@ -20,6 +20,7 @@ import java.sql.Types;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Optional;
 import java.util.UUID;
 
 public final class CommandRepositoryDefault implements CommandRepository {
@@ -128,12 +129,12 @@ public final class CommandRepositoryDefault implements CommandRepository {
         return LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
     }
 
-    private LocalDateTime readOptionalTimestamp(ResultSet resultSet, String column) throws SQLException {
+    private Optional<LocalDateTime> readOptionalTimestamp(ResultSet resultSet, String column) throws SQLException {
         final var timestamp = resultSet.getTimestamp(column);
         if (timestamp == null) {
-            return null;
+            return Optional.empty();
         }
-        return this.readTimestamp(resultSet, column);
+        return Optional.of(this.readTimestamp(resultSet, column));
     }
 
     private CommandResult mapRow(ResultSet resultSet, int rowNumber) throws SQLException {
@@ -150,7 +151,7 @@ public final class CommandRepositoryDefault implements CommandRepository {
 
         // CommandResult.Persisted
         final var persistedAt = this.readOptionalTimestamp(resultSet, "PERSISTED_AT");
-        if (persistedAt == null) {
+        if (persistedAt.isEmpty()) {
             return new CommandResult.Processed(
                 name,
                 status,
@@ -164,7 +165,7 @@ public final class CommandRepositoryDefault implements CommandRepository {
 
         // CommandResult.Executed
         final var executedAt = this.readOptionalTimestamp(resultSet, "EXECUTED_AT");
-        if (executedAt == null) {
+        if (executedAt.isEmpty()) {
             return new CommandResult.Persisted(
                 name,
                 status,
@@ -173,7 +174,7 @@ public final class CommandRepositoryDefault implements CommandRepository {
                 context,
                 processedAt,
                 id,
-                persistedAt
+                persistedAt.get()
             );
         }
 
@@ -185,8 +186,8 @@ public final class CommandRepositoryDefault implements CommandRepository {
             context,
             processedAt,
             id,
-            persistedAt,
-            executedAt
+            persistedAt.get(),
+            executedAt.get()
         );
     }
 }
