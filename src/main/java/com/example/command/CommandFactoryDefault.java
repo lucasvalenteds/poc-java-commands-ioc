@@ -19,7 +19,7 @@ public final class CommandFactoryDefault implements CommandFactory {
         final var name = commandName.name();
 
         if (context.containsBean(name)) {
-            return (Command<CommandPayload>) context.getBean(name, Command.class);
+            return context.getBean(name, Command.class);
         }
 
         throw new CommandNotImplementedException(commandName);

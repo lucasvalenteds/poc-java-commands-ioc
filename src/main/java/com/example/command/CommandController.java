@@ -31,7 +31,7 @@ public final class CommandController {
     }
 
     @GetMapping("/commands/{commandId}")
-    public ResponseEntity<?> findCommandById(@PathVariable UUID commandId) {
+    public ResponseEntity<Object> findCommandById(@PathVariable UUID commandId) {
         try {
             final var command = commandService.findById(commandId);
             LOGGER.info("Command found by ID: {}", command);
@@ -49,8 +49,8 @@ public final class CommandController {
     }
 
     @PostMapping("/commands/{commandName}")
-    public ResponseEntity<?> executeCommand(@PathVariable CommandName commandName,
-                                            @RequestBody CommandPayload payload) {
+    public ResponseEntity<Object> executeCommand(@PathVariable CommandName commandName,
+                                                 @RequestBody CommandPayload payload) {
         try {
             final var commandId = commandService.execute(commandName, payload);
             LOGGER.info("Returning command ID {}", commandId);
