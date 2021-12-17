@@ -138,7 +138,7 @@ public final class CommandRepositoryDefault implements CommandRepository {
     }
 
     private CommandResult mapRow(ResultSet resultSet, int rowNumber) throws SQLException {
-        // CommandResult.Processed
+        // CommandResult
         final var name = CommandName.valueOf(resultSet.getString("NAME"));
         final var status = CommandStatus.valueOf(resultSet.getString("STATUS"));
         final var payloadInput = this.toCommandPayloadInput(resultSet);
