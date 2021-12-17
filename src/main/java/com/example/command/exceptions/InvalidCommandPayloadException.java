@@ -7,13 +7,13 @@ import java.io.Serial;
 public final class InvalidCommandPayloadException extends RuntimeException {
 
     @Serial
-    private static final long serialVersionUID = 1446577454171290293L;
+    private static final long serialVersionUID = 2660166554859092379L;
 
     @JsonIgnore
     private final String property;
 
     @JsonIgnore
-    private final Object value;
+    private final transient Object value;
 
     public InvalidCommandPayloadException(String property, Object value) {
         super("Invalid command payload attribute: " + property);
