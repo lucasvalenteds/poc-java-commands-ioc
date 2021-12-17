@@ -92,7 +92,7 @@ public final class CommandRepositoryDefault implements CommandRepository {
         }
     }
 
-    private static String toJson(ObjectMapper objectMapper, Object object) {
+    private static String toJson(ObjectMapper objectMapper, Object object) throws CommandPersistenceException {
         try {
             return objectMapper.writeValueAsString(object);
         } catch (JsonProcessingException exception) {
@@ -100,10 +100,10 @@ public final class CommandRepositoryDefault implements CommandRepository {
         }
     }
 
-    private CommandContext toCommandContext(ResultSet resultSet) {
+    private <T> T readJsonColumn(ResultSet resultSet, String column, Class<T> type) throws CommandPersistenceException {
         try {
-            final var context = resultSet.getString("CONTEXT");
-            return objectMapper.readValue(context, CommandContext.class);
+            final var payloadOutput = resultSet.getString(column);
+            return objectMapper.readValue(payloadOutput, type);
         } catch (JsonProcessingException exception) {
             throw new CommandPersistenceException(exception);
         } catch (SQLException exception) {
@@ -111,26 +111,16 @@ public final class CommandRepositoryDefault implements CommandRepository {
         }
     }
 
-    private CommandPayload toCommandPayloadInput(ResultSet resultSet) {
-        try {
-            final var payloadInput = resultSet.getString("PAYLOAD_INPUT");
-            return objectMapper.readValue(payloadInput, CommandPayload.class);
-        } catch (JsonProcessingException exception) {
-            throw new CommandPersistenceException(exception);
-        } catch (SQLException exception) {
-            throw new CommandPersistenceException(exception);
-        }
+    private CommandContext toCommandContext(ResultSet resultSet) throws CommandPersistenceException {
+        return this.readJsonColumn(resultSet, "CONTEXT", CommandContext.class);
     }
 
-    private CommandPayload toCommandPayloadOutput(ResultSet resultSet) {
-        try {
-            final var payloadOutput = resultSet.getString("PAYLOAD_OUTPUT");
-            return objectMapper.readValue(payloadOutput, CommandPayload.class);
-        } catch (JsonProcessingException exception) {
-            throw new CommandPersistenceException(exception);
-        } catch (SQLException exception) {
-            throw new CommandPersistenceException(exception);
-        }
+    private CommandPayload toCommandPayloadInput(ResultSet resultSet) throws CommandPersistenceException {
+        return this.readJsonColumn(resultSet, "PAYLOAD_INPUT", CommandPayload.class);
+    }
+
+    private CommandPayload toCommandPayloadOutput(ResultSet resultSet) throws CommandPersistenceException {
+        return this.readJsonColumn(resultSet, "PAYLOAD_OUTPUT", CommandPayload.class);
     }
 
     private LocalDateTime readTimestamp(ResultSet resultSet, String column) throws SQLException {
