@@ -44,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
     CommandsConfiguration.class
 })
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class CommandControllerTest {
+class CommandControllerTest {
 
     private static final UUID DEVICE_ID = UUID.randomUUID();
     private static final DeviceRegistered DEVICE_REGISTERED = DeviceTestBuilder.createDeviceRegistered(DEVICE_ID);
