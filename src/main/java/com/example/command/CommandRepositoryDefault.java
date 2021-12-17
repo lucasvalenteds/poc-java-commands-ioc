@@ -40,41 +40,36 @@ public final class CommandRepositoryDefault implements CommandRepository {
              (NAME, STATUS, PAYLOAD_INPUT, PAYLOAD_OUTPUT, CONTEXT, PROCESSED_AT, ID)
              values (?, ?, ?, ?, ?, ?, ?)
             """;
-        final var arguments = new Object[]{
-            result.name().name(),
-            result.status().name(),
-            CommandRepositoryDefault.toJson(objectMapper, result.payloadInput()),
-            CommandRepositoryDefault.toJson(objectMapper, result.payloadOutput()),
-            CommandRepositoryDefault.toJson(objectMapper, result.context()),
-            result.processedAt(),
-            result.id()
-        };
-        final var types = new int[]{
-            Types.VARCHAR,
-            Types.VARCHAR,
-            Types.VARCHAR,
-            Types.VARCHAR,
-            Types.VARCHAR,
-            Types.TIMESTAMP_WITH_TIMEZONE,
-            Types.VARCHAR
-        };
-        jdbcTemplate.update(query, arguments, types);
+
+        jdbcTemplate.update(query, preparedStatement -> {
+            preparedStatement.setString(1, result.name().name());
+            preparedStatement.setString(2, result.status().name());
+            preparedStatement.setString(3, CommandRepositoryDefault.toJson(objectMapper, result.payloadInput()));
+            preparedStatement.setString(4, CommandRepositoryDefault.toJson(objectMapper, result.payloadOutput()));
+            preparedStatement.setString(5, CommandRepositoryDefault.toJson(objectMapper, result.context()));
+            preparedStatement.setObject(6, result.processedAt(), Types.TIMESTAMP_WITH_TIMEZONE);
+            preparedStatement.setObject(7, result.id(), Types.VARCHAR);
+        });
     }
 
     @Transactional
     public void save(CommandResult.Persisted result) throws DataAccessException {
         final var query = "update COMMANDS set STATUS = ?, PERSISTED_AT = ? WHERE ID = ?";
-        final var arguments = new Object[]{result.status().name(), result.persistedAt(), result.id()};
-        final var types = new int[]{Types.VARCHAR, Types.TIMESTAMP_WITH_TIMEZONE, Types.VARCHAR};
-        jdbcTemplate.update(query, arguments, types);
+        jdbcTemplate.update(query, preparedStatement -> {
+            preparedStatement.setString(1, result.status().name());
+            preparedStatement.setObject(2, result.persistedAt(), Types.TIMESTAMP_WITH_TIMEZONE);
+            preparedStatement.setObject(3, result.id(), Types.VARCHAR);
+        });
     }
 
     @Transactional
     public void save(CommandResult.Executed result) throws DataAccessException {
         final var query = "update COMMANDS set STATUS = ?, EXECUTED_AT = ? WHERE ID = ?";
-        final var arguments = new Object[]{result.status().name(), result.executedAt(), result.id()};
-        final var types = new int[]{Types.VARCHAR, Types.TIMESTAMP_WITH_TIMEZONE, Types.VARCHAR};
-        jdbcTemplate.update(query, arguments, types);
+        jdbcTemplate.update(query, preparedStatement -> {
+            preparedStatement.setString(1, result.status().name());
+            preparedStatement.setObject(2, result.executedAt(), Types.TIMESTAMP_WITH_TIMEZONE);
+            preparedStatement.setObject(3, result.id(), Types.VARCHAR);
+        });
     }
 
     public CommandResult findById(UUID id) throws CommandNotFoundException {
