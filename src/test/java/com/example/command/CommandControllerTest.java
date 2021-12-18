@@ -13,6 +13,7 @@ import com.example.command.contract.CommandStatus;
 import com.example.command.exceptions.CommandPersistenceException;
 import com.example.command.testing.CommandTestConfiguration;
 import com.example.command.testing.DeviceTestBuilder;
+import com.example.command.testing.JsonProcessingExceptionStub;
 import com.example.device.DeviceRegistered;
 import com.example.device.DeviceService;
 import org.junit.jupiter.api.BeforeEach;
@@ -197,7 +198,7 @@ class CommandControllerTest {
     }
 
     @Test
-    void testDatabasePersistenceError() {
+    void testDatabasePersistenceSqlError() {
         // Arrange
         final var commandService = Mockito.mock(CommandService.class);
         final var commandController = new CommandController(commandService);
@@ -226,5 +227,37 @@ class CommandControllerTest {
         // Assert
         assertNotNull(error);
         assertEquals("Could not persist command", error.message());
+    }
+
+    @Test
+    void testDatabasePersistenceJsonError() {
+        // Arrange
+        final var commandService = Mockito.mock(CommandService.class);
+        final var commandController = new CommandController(commandService);
+        final var webTestClient = WebTestClient.bindToController(commandController)
+            .configureClient()
+            .build();
+
+        final var commandName = CommandName.SET_LOG_LEVEL;
+        final var payload = new SetLogLevel.PayloadInput(UUID.randomUUID(), 10);
+
+        Mockito.when(commandService.execute(commandName, payload))
+            .thenThrow(new CommandPersistenceException(new JsonProcessingExceptionStub()));
+
+        // Act
+        final var error = webTestClient.post()
+            .uri("/commands/{commandName}", commandName.getPublicName())
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(BodyInserters.fromValue(payload))
+            .exchange()
+            .expectStatus().is5xxServerError()
+            .expectHeader().contentType(MediaType.APPLICATION_JSON)
+            .expectBody(ServiceResponseError.class)
+            .returnResult()
+            .getResponseBody();
+
+        // Assert
+        assertNotNull(error);
+        assertEquals("Could not serialize/deserialize command", error.message());
     }
 }
