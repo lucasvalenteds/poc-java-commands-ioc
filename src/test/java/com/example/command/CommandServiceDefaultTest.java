@@ -45,7 +45,7 @@ class CommandServiceDefaultTest {
     @Test
     @Order(1)
     void executingCommandImplemented() {
-        final var command = CommandName.TurnOn;
+        final var command = CommandName.TURN_ON;
         final var payload = new CommandPayload.Empty();
 
         final var commandId = service.execute(command, payload);
@@ -63,7 +63,7 @@ class CommandServiceDefaultTest {
 
         final var result = service.findById(id);
 
-        assertEquals(CommandName.TurnOn, result.name());
+        assertEquals(CommandName.TURN_ON, result.name());
         assertEquals(CommandStatus.DELIVERED, result.status());
         assertEquals(new CommandPayload.Empty(), result.payloadInput());
         assertEquals(new CommandPayload.Empty(), result.payloadOutput());

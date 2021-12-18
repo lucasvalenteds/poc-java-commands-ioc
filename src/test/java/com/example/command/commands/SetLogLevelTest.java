@@ -61,7 +61,7 @@ class SetLogLevelTest {
 
         final var result = command.process(payload);
 
-        assertEquals(CommandName.SetLogLevel, result.name());
+        assertEquals(CommandName.SET_LOG_LEVEL, result.name());
         assertEquals(CommandStatus.RECEIVED, result.status());
         assertEquals(payload, result.payloadInput());
         assertEquals(new SetLogLevel.PayloadContext(deviceRegistered), result.context());
@@ -80,7 +80,7 @@ class SetLogLevelTest {
 
         final var result = command.process(payload);
 
-        assertEquals(CommandName.SetLogLevel, result.name());
+        assertEquals(CommandName.SET_LOG_LEVEL, result.name());
         assertEquals(CommandStatus.FAILED, result.status());
         assertEquals(payload, result.payloadInput());
         assertEquals(new CommandPayload.Empty(), result.payloadOutput());

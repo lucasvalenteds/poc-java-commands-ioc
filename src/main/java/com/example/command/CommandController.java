@@ -48,10 +48,11 @@ public final class CommandController {
         }
     }
 
-    @PostMapping("/commands/{commandName}")
-    public ResponseEntity<Object> executeCommand(@PathVariable CommandName commandName,
+    @PostMapping("/commands/{string}")
+    public ResponseEntity<Object> executeCommand(@PathVariable String string,
                                                  @RequestBody CommandPayload payload) {
         try {
+            final var commandName = CommandName.fromString(string);
             final var commandId = commandService.execute(commandName, payload);
             LOGGER.info("Returning command ID {}", commandId);
 

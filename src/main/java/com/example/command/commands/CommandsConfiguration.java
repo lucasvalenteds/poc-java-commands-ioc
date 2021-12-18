@@ -11,13 +11,13 @@ import org.springframework.context.annotation.Scope;
 @SuppressWarnings("rawtypes")
 public class CommandsConfiguration {
 
-    @Bean("SetLogLevel")
+    @Bean("SET_LOG_LEVEL")
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     Command setLogLevel(DeviceService deviceService) {
         return new SetLogLevel(deviceService);
     }
 
-    @Bean("TurnOn")
+    @Bean("TURN_ON")
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     Command turnOn() {
         return new TurnOn();

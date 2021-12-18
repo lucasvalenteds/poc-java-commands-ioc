@@ -29,7 +29,7 @@ public final class SetLogLevel extends GenericCommand<SetLogLevel.PayloadInput, 
 
     @Override
     public CommandName getName() {
-        return CommandName.SetLogLevel;
+        return CommandName.SET_LOG_LEVEL;
     }
 
     @Override

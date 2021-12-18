@@ -7,6 +7,6 @@ final class GenericCommandStub extends GenericCommand<CommandPayload.Empty, Comm
 
     @Override
     public CommandName getName() {
-        return CommandName.NoOp;
+        return CommandName.NO_OP;
     }
 }

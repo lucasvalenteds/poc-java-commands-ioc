@@ -15,7 +15,7 @@ public final class CommandTestBuilder {
     }
 
     public static CommandResult.Processed createCommandProcessed(UUID commandId) {
-        final var name = CommandName.SetLogLevel;
+        final var name = CommandName.SET_LOG_LEVEL;
         final var status = CommandStatus.RECEIVED;
 
         final var deviceId = UUID.fromString("8d3d0e4f-716c-4fc9-8c21-79c0f34d7370");

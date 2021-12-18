@@ -41,7 +41,7 @@ class CommandFactoryDefaultTest {
     void createThrowsWhenCommandNotImplemented() {
         final var exception = assertThrows(
             CommandNotImplementedException.class,
-            () -> factory.create(CommandName.NoOp)
+            () -> factory.create(CommandName.NO_OP)
         );
 
         assertEquals("Command not implemented yet: NoOp", exception.getMessage());
@@ -50,8 +50,8 @@ class CommandFactoryDefaultTest {
 
     static Stream<Arguments> commands() {
         return Stream.of(
-            Arguments.of(CommandName.SetLogLevel, SetLogLevel.class),
-            Arguments.of(CommandName.TurnOn, TurnOn.class)
+            Arguments.of(CommandName.SET_LOG_LEVEL, SetLogLevel.class),
+            Arguments.of(CommandName.TURN_ON, TurnOn.class)
         );
     }
 

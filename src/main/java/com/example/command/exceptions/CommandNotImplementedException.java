@@ -9,7 +9,11 @@ public final class CommandNotImplementedException extends RuntimeException {
     @Serial
     private static final long serialVersionUID = 6846186007140913447L;
 
+    public CommandNotImplementedException(String string) {
+        super("Command not implemented yet: " + string);
+    }
+
     public CommandNotImplementedException(CommandName commandName) {
-        super("Command not implemented yet: " + commandName.name());
+        this(commandName.getPublicName());
     }
 }

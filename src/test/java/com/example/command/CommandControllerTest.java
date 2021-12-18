@@ -49,7 +49,7 @@ class CommandControllerTest {
     private static final UUID DEVICE_ID = UUID.randomUUID();
     private static final DeviceRegistered DEVICE_REGISTERED = DeviceTestBuilder.createDeviceRegistered(DEVICE_ID);
 
-    private static final CommandName COMMAND_NAME = CommandName.SetLogLevel;
+    private static final CommandName COMMAND_NAME = CommandName.SET_LOG_LEVEL;
     private static final CommandPayload COMMAND_PAYLOAD = new SetLogLevel.PayloadInput(DEVICE_REGISTERED.id(), 5);
 
     private static CommandId commandId;
@@ -76,7 +76,7 @@ class CommandControllerTest {
             .thenReturn(DEVICE_REGISTERED);
 
         final var commandId = webTestClient.post()
-            .uri("/commands/{commandName}", COMMAND_NAME.name())
+            .uri("/commands/{commandName}", COMMAND_NAME.getPublicName())
             .contentType(MediaType.APPLICATION_JSON)
             .body(BodyInserters.fromValue(COMMAND_PAYLOAD))
             .exchange()
@@ -128,7 +128,22 @@ class CommandControllerTest {
 
     @Test
     void testCommandNotImplemented() {
-        final var commandName = CommandName.NoOp.name();
+        final var commandName = CommandName.NO_OP.getPublicName();
+
+        webTestClient.post()
+            .uri("/commands/{commandName}", commandName)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(BodyInserters.fromValue(COMMAND_PAYLOAD))
+            .exchange()
+            .expectStatus().isNotFound()
+            .expectHeader().contentType(MediaType.APPLICATION_JSON)
+            .expectBody(ServiceResponseError.class)
+            .isEqualTo(new ServiceResponseError("Command not implemented yet: " + commandName));
+    }
+
+    @Test
+    void testCommandNeitherImplementedNorMapped() {
+        final var commandName = "TurnOff";
 
         webTestClient.post()
             .uri("/commands/{commandName}", commandName)
@@ -160,7 +175,7 @@ class CommandControllerTest {
 
     @Test
     void testInvalidPayload() {
-        final var commandName = CommandName.SetLogLevel.name();
+        final var commandName = CommandName.SET_LOG_LEVEL.getPublicName();
         final var payload = new SetLogLevel.PayloadInput(UUID.randomUUID(), 10);
 
         final var commandId = webTestClient.post()
@@ -190,7 +205,7 @@ class CommandControllerTest {
             .configureClient()
             .build();
 
-        final var commandName = CommandName.SetLogLevel;
+        final var commandName = CommandName.SET_LOG_LEVEL;
         final var payload = new SetLogLevel.PayloadInput(UUID.randomUUID(), 10);
 
         Mockito.when(commandService.execute(commandName, payload))
@@ -198,7 +213,7 @@ class CommandControllerTest {
 
         // Act
         final var error = webTestClient.post()
-            .uri("/commands/{commandName}", commandName.name())
+            .uri("/commands/{commandName}", commandName.getPublicName())
             .contentType(MediaType.APPLICATION_JSON)
             .body(BodyInserters.fromValue(payload))
             .exchange()

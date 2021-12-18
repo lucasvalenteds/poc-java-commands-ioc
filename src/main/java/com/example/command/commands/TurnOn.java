@@ -7,6 +7,6 @@ public final class TurnOn extends GenericCommand<CommandPayload.Empty, CommandPa
 
     @Override
     public CommandName getName() {
-        return CommandName.TurnOn;
+        return CommandName.TURN_ON;
     }
 }
